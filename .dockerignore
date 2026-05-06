@@ -1,0 +1,32 @@
+# Ignorados no build Docker
+# ──────────────────────────
+
+# Artefatos de build Maven
+target/
+!target/*.jar
+
+# Build do Ebook
+build/node_modules/
+dist/
+docs/
+
+# Fontes de desenvolvimento
+src/test/
+
+# IDEs e ferramentas locais
+.git/
+.github/
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Env files locais (nunca embutir secrets)
+.env
+*.env

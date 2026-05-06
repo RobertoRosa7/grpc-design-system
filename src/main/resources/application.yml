@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: document-pdf-grpc
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/orderflow}
+      auto-index-creation: true
+
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: ${MINIO_BUCKET:documents}
+
+grpc:
+  server:
+    port: ${GRPC_PORT:9090}
+    # Habilita reflexão do serviço — útil para grpcurl e testes manuais
+    reflection:
+      enabled: true
+
+logging:
+  level:
+    br.com.orderflow: DEBUG
+    net.devh.boot.grpc: INFO

@@ -18,14 +18,15 @@ Transformar conteudo tecnico em narrativa envolvente, acessivel e memoravel. Cad
 
 > **Esta regra nao pode ser ignorada.**
 
-- Cada capitulo deve ter **exatamente 10 paginas** de conteudo editorial.
+- Cada capitulo deve ter **no minimo 10 paginas** de conteudo editorial, sem limite maximo de paginas.
+- O conteudo deve ser tao extenso quanto necessario para cobrir o topico com profundidade, exemplos e contexto adequados.
 - Uma pagina equivale a aproximadamente **400 palavras** de texto corrido (excluindo blocos de codigo e tabelas).
-- O volume de cada subtitulo deve ser proporcional ao total de paginas do capitulo.
-  - Exemplo: um capitulo com 5 subtitulos deve ter, em media, 2 paginas por subtitulo.
-- O livro tem **19 capitulos**, totalizando **190 paginas** de conteudo principal.
+- O volume de cada subtitulo deve ser proporcional a complexidade do tema abordado.
+  - Topicos mais complexos merecem mais paginas. Nao truncar explicacoes para caber em limite rigido.
+- O livro tem **19 capitulos** com pelo menos **190 paginas** de conteudo principal — podendo superar esse total.
 - Exercicios e referencias ficam fora desse limite (sao contabilizados separadamente no backmatter).
 
-Antes de considerar um capitulo concluido, faca a contagem: o texto tem pelo menos 4.000 palavras de conteudo corrido?
+Antes de considerar um capitulo concluido, faca a contagem: o texto tem pelo menos 4.000 palavras de conteudo corrido? Se o topico exige mais, escreva mais.
 
 ---
 
@@ -147,7 +148,7 @@ Feche o capitulo com:
 
 Antes de considerar o capitulo concluido, verifique cada item:
 
-- [ ] O capitulo tem pelo menos 4.000 palavras de texto corrido?
+- [ ] O capitulo tem pelo menos 4.000 palavras de texto corrido (sem limite maximo — escreva o quanto o tema exigir)?
 - [ ] Ha uma abertura com cenario real nos primeiros 2 paragrafos?
 - [ ] O fio narrativo do OrderFlow foi mencionado?
 - [ ] Ha pelo menos uma citacao de autor reconhecido?

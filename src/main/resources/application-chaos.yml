@@ -1,0 +1,28 @@
+# ============================================================
+# application-chaos.yml
+# Profile de Chaos Engineering — NUNCA usar em produção
+# Ativa injeção de falhas para validar resiliência dos clientes
+# ============================================================
+
+spring:
+  application:
+    name: document-pdf-grpc-chaos
+
+chaos:
+  enabled: true
+  # Probabilidade de injetar latência artificial (0.0 a 1.0)
+  latency-probability: 0.30
+  # Faixa de latência injetada em millisegundos
+  latency-min-ms: 500
+  latency-max-ms: 3000
+  # Probabilidade de retornar UNAVAILABLE
+  failure-probability: 0.10
+  # Probabilidade de retornar DEADLINE_EXCEEDED
+  timeout-probability: 0.05
+  # Probabilidade de retornar RESOURCE_EXHAUSTED
+  resource-exhausted-probability: 0.05
+
+# Log detalhado apenas para o interceptor de Chaos
+logging:
+  level:
+    br.com.orderflow.document.infra.adapter.grpc.ChaosInterceptorConfig: DEBUG

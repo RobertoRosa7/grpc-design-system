@@ -1,0 +1,30 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: orderflow-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: orderflow
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  document-pdf-grpc:
+    build: .
+    container_name: document-pdf-grpc
+    ports:
+      - "9090:9090"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/orderflow
+      GRPC_PORT: 9090
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+volumes:
+  mongo_data:

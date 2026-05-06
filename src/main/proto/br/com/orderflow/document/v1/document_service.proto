@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package br.com.orderflow.document.v1;
+
+option java_multiple_files = true;
+option java_package = "br.com.orderflow.document.v1";
+option java_outer_classname = "DocumentServiceProto";
+
+// Servico principal de geração de documentos PDF
+service DocumentService {
+  // Gera um novo documento PDF a partir de um payload estruturado
+  rpc GenerateDocument(GenerateDocumentRequest) returns (GenerateDocumentResponse);
+
+  // Recupera metadados de um documento previamente gerado
+  rpc GetDocument(GetDocumentRequest) returns (GetDocumentResponse);
+}
+
+// Requisição de geração de documento
+message GenerateDocumentRequest {
+  // Identificador de correlação para rastreabilidade entre serviços
+  string correlation_id = 1;
+  // Tipo de documento a ser gerado
+  DocumentType type = 2;
+  // Payload específico por tipo de documento (oneof garante exclusividade)
+  oneof payload {
+    InvoicePayload invoice = 3;
+    ContractPayload contract = 4;
+    ReportPayload report = 5;
+  }
+}
+
+// Resposta da operação de geração
+message GenerateDocumentResponse {
+  // Identificador único do documento gerado
+  string document_id = 1;
+  // Status atual do processamento
+  DocumentStatus status = 2;
+  // Caminho de armazenamento do PDF gerado
+  string storage_path = 3;
+  // Timestamp de geração em milissegundos (epoch)
+  int64 generated_at = 4;
+}
+
+// Requisição de consulta de documento existente
+message GetDocumentRequest {
+  string document_id = 1;
+}
+
+// Resposta com metadados do documento
+message GetDocumentResponse {
+  string document_id = 1;
+  DocumentStatus status = 2;
+  DocumentType type = 3;
+  string storage_path = 4;
+  int64 generated_at = 5;
+}
+
+// Payload de nota fiscal
+message InvoicePayload {
+  string customer_id = 1;
+  string order_id = 2;
+  repeated LineItem items = 3;
+  double total_amount = 4;
+  string currency = 5;
+}
+
+// Item de linha em uma nota fiscal
+message LineItem {
+  string description = 1;
+  int32 quantity = 2;
+  double unit_price = 3;
+}
+
+// Payload de contrato
+message ContractPayload {
+  string party_a = 1;
+  string party_b = 2;
+  string content = 3;
+  string valid_until = 4;
+}
+
+// Payload de relatório
+message ReportPayload {
+  string title = 1;
+  string period = 2;
+  string content = 3;
+}
+
+// Tipos de documento suportados pelo serviço
+enum DocumentType {
+  DOCUMENT_TYPE_UNSPECIFIED = 0;
+  DOCUMENT_TYPE_INVOICE = 1;
+  DOCUMENT_TYPE_CONTRACT = 2;
+  DOCUMENT_TYPE_REPORT = 3;
+}
+
+// Ciclo de vida do processamento de um documento
+enum DocumentStatus {
+  DOCUMENT_STATUS_UNSPECIFIED = 0;
+  DOCUMENT_STATUS_PROCESSING = 1;
+  DOCUMENT_STATUS_COMPLETED = 2;
+  DOCUMENT_STATUS_FAILED = 3;
+}
+
+// Campo reservado para versões futuras — não reutilizar estes números de campo
+// reserved 10, 11, 12;
+// reserved "attachment_url", "signature_hash";
