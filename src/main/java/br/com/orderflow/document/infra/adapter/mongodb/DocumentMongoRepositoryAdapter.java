@@ -2,17 +2,18 @@ package br.com.orderflow.document.infra.adapter.mongodb;
 
 import br.com.orderflow.document.domain.model.Document;
 import br.com.orderflow.document.domain.port.out.DocumentRepositoryPort;
+import br.com.orderflow.document.infra.constant.InfraConstants;
+import br.com.orderflow.document.infra.exception.InfraPersistenceException;
 
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 /**
- * Adaptador de saída: implementa {@link DocumentRepositoryPort} usando MongoDB
+ * Adaptador de saída: implementa DocumentRepositoryPort usando MongoDB
  * via Spring Data.
- * <p>
  * Delega a conversão entre o modelo de domínio e a entidade de persistência
- * ao {@link DocumentMongoMapper}. Este adaptador contém apenas orquestração.
+ * ao DocumentMongoMapper. Este adaptador contém apenas orquestração.
  */
 @Component
 public class DocumentMongoRepositoryAdapter implements DocumentRepositoryPort {
@@ -29,13 +30,21 @@ public class DocumentMongoRepositoryAdapter implements DocumentRepositoryPort {
 
   @Override
   public Document save(Document document) {
-    DocumentMongoEntity entity = mongoMapper.toEntity(document);
-    DocumentMongoEntity saved = mongoRepository.save(entity);
-    return mongoMapper.toDomain(saved);
+    try {
+      DocumentMongoEntity entity = mongoMapper.toEntity(document);
+      DocumentMongoEntity saved = mongoRepository.save(entity);
+      return mongoMapper.toDomain(saved);
+    } catch (Exception ex) {
+      throw new InfraPersistenceException(InfraConstants.ERROR_PERSISTENCE, ex);
+    }
   }
 
   @Override
   public Optional<Document> findById(String id) {
-    return mongoRepository.findById(id).map(mongoMapper::toDomain);
+    try {
+      return mongoRepository.findById(id).map(mongoMapper::toDomain);
+    } catch (Exception ex) {
+      throw new InfraPersistenceException(InfraConstants.ERROR_PERSISTENCE, ex);
+    }
   }
 }

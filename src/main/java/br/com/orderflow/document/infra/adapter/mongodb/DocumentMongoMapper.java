@@ -3,12 +3,13 @@ package br.com.orderflow.document.infra.adapter.mongodb;
 import br.com.orderflow.document.domain.model.Document;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
  * Mapper da camada de infraestrutura MongoDB.
- * <p>
  * Responsável por converter entre a entidade de persistência
- * ({@link DocumentMongoEntity}) e a entidade de domínio ({@link Document}).
- * Centraliza o mapeamento e libera o {@link DocumentMongoRepositoryAdapter}
+ * DocumentMongoEntity e a entidade de domínio Document.
+ * Centraliza o mapeamento e libera o DocumentMongoRepositoryAdapter
  * de qualquer lógica de conversão.
  */
 @Component
@@ -35,13 +36,16 @@ public class DocumentMongoMapper {
         Document domain = Document.create(entity.getCorrelationId(), entity.getType());
         domain.setId(entity.getId());
 
-        if (entity.getStatus() != null) {
-            switch (entity.getStatus()) {
-                case COMPLETED -> domain.markCompleted(entity.getStoragePath());
-                case FAILED -> domain.markFailed();
-                // PROCESSING já é o estado padrão de Document.create()
-            }
-        }
+        Optional.ofNullable(entity.getStatus())
+                .ifPresent(status -> {
+                    switch (status) {
+                        case COMPLETED -> domain.markCompleted(entity.getStoragePath());
+                        case FAILED -> domain.markFailed();
+                        case PROCESSING -> {
+                            // PROCESSING já é o estado padrão de Document.create()
+                        }
+                    }
+                });
         return domain;
     }
 }

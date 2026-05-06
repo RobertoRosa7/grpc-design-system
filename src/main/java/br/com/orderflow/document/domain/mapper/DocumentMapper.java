@@ -1,5 +1,6 @@
 package br.com.orderflow.document.domain.mapper;
 
+import br.com.orderflow.document.domain.constant.DomainConstants;
 import br.com.orderflow.document.domain.dto.GenerateDocumentRequestDto;
 import br.com.orderflow.document.domain.dto.GenerateDocumentResponseDto;
 import br.com.orderflow.document.domain.dto.GetDocumentResponseDto;
@@ -13,15 +14,12 @@ import java.util.List;
 
 /**
  * Mapper da camada de aplicação.
- * <p>
  * Responsável por converter entre DTOs (objetos de fronteira) e o modelo
  * de domínio. Centraliza o mapeamento, mantendo o caso de uso e os adaptadores
  * livres de lógica de conversão.
- * <p>
- * Fluxo de entrada: {@link GenerateDocumentRequestDto} →
- * {@link DocumentPayload}
- * Fluxo de saída: {@link Document} → {@link GenerateDocumentResponseDto}
- * {@link Document} → {@link GetDocumentResponseDto}
+ * Fluxo de entrada: GenerateDocumentRequestDto para DocumentPayload.
+ * Fluxo de saída: Document para GenerateDocumentResponseDto.
+ * Fluxo de saída: Document para GetDocumentResponseDto.
  */
 @Component
 public class DocumentMapper {
@@ -73,7 +71,7 @@ public class DocumentMapper {
                 document.getId(),
                 document.getStatus(),
                 document.getType(),
-                document.getStoragePath() != null ? document.getStoragePath() : "",
+                document.getStoragePath() != null ? document.getStoragePath() : DomainConstants.EMPTY_VALUE,
                 document.getGeneratedAt().toEpochMilli());
     }
 }

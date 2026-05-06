@@ -18,6 +18,10 @@ grpc:
     # Habilita reflexão do serviço — útil para grpcurl e testes manuais
     reflection:
       enabled: true
+  client:
+    document-service:
+      address: static://localhost:${GRPC_PORT:9090}
+      negotiation-type: plaintext
 
 logging:
   level:

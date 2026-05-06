@@ -1,4 +1,4 @@
-﻿package br.com.orderflow.document.infra.adapter.grpc;
+package br.com.orderflow.document.infra.adapter.grpc;
 
 import io.grpc.ForwardingServerCall;
 import io.grpc.Metadata;

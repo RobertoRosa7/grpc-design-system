@@ -3,6 +3,8 @@ package br.com.orderflow.document.infra.adapter.pdf;
 import br.com.orderflow.document.domain.model.DocumentPayload;
 import br.com.orderflow.document.domain.model.DocumentType;
 import br.com.orderflow.document.domain.port.out.PdfRendererPort;
+import br.com.orderflow.document.infra.constant.InfraConstants;
+import br.com.orderflow.document.infra.exception.InfraRenderException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -19,8 +21,8 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * Adaptador de saída: renderiza PDF usando a biblioteca OpenPDF.
- * <p>
- * Implementa {@link PdfRendererPort}. Se a equipe decidir migrar para iText
+ * Implementa PdfRendererPort.
+ * Se a equipe decidir migrar para iText
  * ou Apache FOP, apenas este componente precisa ser substituído.
  * O caso de uso permanece inalterado.
  */
@@ -47,7 +49,7 @@ public class OpenPdfRendererAdapter implements PdfRendererPort {
       return outputStream.toByteArray();
 
     } catch (Exception e) {
-      throw new RuntimeException("Falha ao renderizar PDF", e);
+      throw new InfraRenderException(InfraConstants.ERROR_PDF_RENDER, e);
     }
   }
 
@@ -61,37 +63,40 @@ public class OpenPdfRendererAdapter implements PdfRendererPort {
   private void addBody(Document doc, DocumentPayload payload) throws Exception {
     Font bodyFont = FontFactory.getFont(FontFactory.HELVETICA, 11, Color.BLACK);
 
-    if (payload.getType() == DocumentType.INVOICE) {
-      doc.add(new Paragraph("Cliente: " + payload.getCustomerId(), bodyFont));
-      doc.add(new Paragraph("Pedido: " + payload.getOrderId(), bodyFont));
-      doc.add(new Paragraph(" "));
-
-      if (payload.getItems() != null) {
-        for (DocumentPayload.LineItem item : payload.getItems()) {
-          String line = String.format("  %s  x%d  @ %.2f",
-              item.description(), item.quantity(), item.unitPrice());
-          doc.add(new Paragraph(line, bodyFont));
-        }
-      }
-
-      doc.add(new Paragraph(" "));
-      Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
-      doc.add(new Paragraph(
-          String.format("Total: %.2f %s", payload.getTotalAmount(), payload.getCurrency()),
-          boldFont));
-
-    } else if (payload.getType() == DocumentType.CONTRACT) {
-      doc.add(new Paragraph("Parte A: " + payload.getPartyA(), bodyFont));
-      doc.add(new Paragraph("Parte B: " + payload.getPartyB(), bodyFont));
-      doc.add(new Paragraph("Válido até: " + payload.getValidUntil(), bodyFont));
-      doc.add(new Paragraph(" "));
-      doc.add(new Paragraph(payload.getContractContent(), bodyFont));
-
-    } else if (payload.getType() == DocumentType.REPORT) {
-      doc.add(new Paragraph("Período: " + payload.getPeriod(), bodyFont));
-      doc.add(new Paragraph(" "));
-      doc.add(new Paragraph(payload.getReportContent(), bodyFont));
+    switch (payload.getType()) {
+      case INVOICE -> addInvoiceBody(doc, payload, bodyFont);
+      case CONTRACT -> addContractBody(doc, payload, bodyFont);
+      case REPORT -> addReportBody(doc, payload, bodyFont);
     }
+  }
+
+  private void addInvoiceBody(Document doc, DocumentPayload payload, Font bodyFont) throws Exception {
+    doc.add(new Paragraph("Cliente: " + payload.getCustomerId(), bodyFont));
+    doc.add(new Paragraph("Pedido: " + payload.getOrderId(), bodyFont));
+    doc.add(new Paragraph(" "));
+
+    for (DocumentPayload.LineItem item : payload.getItems() == null ? java.util.List.<DocumentPayload.LineItem>of() : payload.getItems()) {
+      String line = String.format("  %s  x%d  @ %.2f", item.description(), item.quantity(), item.unitPrice());
+      doc.add(new Paragraph(line, bodyFont));
+    }
+
+    doc.add(new Paragraph(" "));
+    Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
+    doc.add(new Paragraph(String.format("Total: %.2f %s", payload.getTotalAmount(), payload.getCurrency()), boldFont));
+  }
+
+  private void addContractBody(Document doc, DocumentPayload payload, Font bodyFont) throws Exception {
+    doc.add(new Paragraph("Parte A: " + payload.getPartyA(), bodyFont));
+    doc.add(new Paragraph("Parte B: " + payload.getPartyB(), bodyFont));
+    doc.add(new Paragraph("Válido até: " + payload.getValidUntil(), bodyFont));
+    doc.add(new Paragraph(" "));
+    doc.add(new Paragraph(payload.getContractContent(), bodyFont));
+  }
+
+  private void addReportBody(Document doc, DocumentPayload payload, Font bodyFont) throws Exception {
+    doc.add(new Paragraph("Período: " + payload.getPeriod(), bodyFont));
+    doc.add(new Paragraph(" "));
+    doc.add(new Paragraph(payload.getReportContent(), bodyFont));
   }
 
   private void addFooter(Document doc, DocumentPayload payload) throws Exception {
@@ -104,7 +109,7 @@ public class OpenPdfRendererAdapter implements PdfRendererPort {
   private String resolveTitle(DocumentPayload payload) {
     return switch (payload.getType()) {
       case INVOICE -> "Nota Fiscal";
-      case CONTRACT -> payload.getReportTitle() != null ? payload.getReportTitle() : "Contrato";
+      case CONTRACT -> "Contrato";
       case REPORT -> payload.getReportTitle() != null ? payload.getReportTitle() : "Relatório";
     };
   }
