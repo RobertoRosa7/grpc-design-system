@@ -2,8 +2,11 @@ package br.com.orderflow.document.infra.adapter.mongodb;
 
 import br.com.orderflow.document.domain.model.Document;
 import br.com.orderflow.document.domain.port.out.DocumentRepositoryPort;
-import br.com.orderflow.document.infra.constant.InfraConstants;
-import br.com.orderflow.document.infra.exception.InfraPersistenceException;
+import br.com.orderflow.document.infra.adapter.mongodb.constant.MongoConstants;
+import br.com.orderflow.document.infra.adapter.mongodb.entity.DocumentMongoEntity;
+import br.com.orderflow.document.infra.adapter.mongodb.exception.MongoPersistenceException;
+import br.com.orderflow.document.infra.adapter.mongodb.mapper.DocumentMongoMapper;
+import br.com.orderflow.document.infra.adapter.mongodb.repository.DocumentMongoRepository;
 
 import org.springframework.stereotype.Component;
 
@@ -35,7 +38,7 @@ public class DocumentMongoRepositoryAdapter implements DocumentRepositoryPort {
       DocumentMongoEntity saved = mongoRepository.save(entity);
       return mongoMapper.toDomain(saved);
     } catch (Exception ex) {
-      throw new InfraPersistenceException(InfraConstants.ERROR_PERSISTENCE, ex);
+      throw new MongoPersistenceException(MongoConstants.ERROR_PERSISTENCE, ex);
     }
   }
 
@@ -44,7 +47,7 @@ public class DocumentMongoRepositoryAdapter implements DocumentRepositoryPort {
     try {
       return mongoRepository.findById(id).map(mongoMapper::toDomain);
     } catch (Exception ex) {
-      throw new InfraPersistenceException(InfraConstants.ERROR_PERSISTENCE, ex);
+      throw new MongoPersistenceException(MongoConstants.ERROR_PERSISTENCE, ex);
     }
   }
 }

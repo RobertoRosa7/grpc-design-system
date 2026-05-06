@@ -1,7 +1,5 @@
 package br.com.orderflow.document.infra.adapter.grpc;
 
-import br.com.orderflow.document.infra.adapter.grpc.ChaosInterceptorConfig.ChaosInterceptor;
-import br.com.orderflow.document.infra.adapter.grpc.ChaosInterceptorConfig.ChaosProperties;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.ServerCall;
@@ -12,6 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import br.com.orderflow.document.infra.config.chaos.ChaosInterceptorConfig.ChaosInterceptor;
+import br.com.orderflow.document.infra.config.chaos.ChaosInterceptorConfig.ChaosProperties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

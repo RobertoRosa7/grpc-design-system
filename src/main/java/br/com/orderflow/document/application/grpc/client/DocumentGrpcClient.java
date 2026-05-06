@@ -1,7 +1,7 @@
 package br.com.orderflow.document.application.grpc.client;
 
-import br.com.orderflow.document.application.constant.ApplicationConstants;
-import br.com.orderflow.document.application.exception.ApplicationException;
+import br.com.orderflow.document.application.grpc.client.exception.ApplicationGrpcClientException;
+import br.com.orderflow.document.application.web.constant.WebConstants;
 import br.com.orderflow.document.v1.DocumentServiceGrpc;
 import br.com.orderflow.document.v1.GenerateDocumentRequest;
 import br.com.orderflow.document.v1.GenerateDocumentResponse;
@@ -23,7 +23,7 @@ public class DocumentGrpcClient {
     try {
       return client.generateDocument(request);
     } catch (Exception ex) {
-      throw new ApplicationException(ApplicationConstants.GRPC_ERROR_INTERNAL, ex);
+      throw new ApplicationGrpcClientException(WebConstants.GRPC_ERROR_INTERNAL, ex);
     }
   }
 
@@ -31,7 +31,7 @@ public class DocumentGrpcClient {
     try {
       return client.getDocument(request);
     } catch (Exception ex) {
-      throw new ApplicationException(ApplicationConstants.GRPC_ERROR_INTERNAL, ex);
+      throw new ApplicationGrpcClientException(WebConstants.GRPC_ERROR_INTERNAL, ex);
     }
   }
 }

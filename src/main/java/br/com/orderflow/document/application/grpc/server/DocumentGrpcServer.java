@@ -1,12 +1,13 @@
 package br.com.orderflow.document.application.grpc.server;
 
-import br.com.orderflow.document.application.constant.ApplicationConstants;
-import br.com.orderflow.document.application.exception.ApplicationNotFoundException;
-import br.com.orderflow.document.application.exception.ApplicationValidationException;
+import br.com.orderflow.document.application.grpc.server.exception.ApplicationGrpcValidationException;
+import br.com.orderflow.document.application.grpc.server.mapper.ApplicationGrpcMapper;
+import br.com.orderflow.document.application.grpc.server.mapper.DomainDocumentMapper;
+import br.com.orderflow.document.application.web.constant.WebConstants;
+import br.com.orderflow.document.application.web.controller.exception.ApplicationWebNotFoundException;
 import br.com.orderflow.document.domain.dto.GenerateDocumentResponseDto;
 import br.com.orderflow.document.domain.dto.GetDocumentResponseDto;
 import br.com.orderflow.document.domain.exception.DomainException;
-import br.com.orderflow.document.domain.mapper.DocumentMapper;
 import br.com.orderflow.document.domain.model.Document;
 import br.com.orderflow.document.domain.model.DocumentPayload;
 import br.com.orderflow.document.domain.port.in.GeneratePdfPort;
@@ -35,13 +36,13 @@ public class DocumentGrpcServer extends DocumentServiceGrpc.DocumentServiceImplB
   private final GeneratePdfPort generatePdfPort;
   private final GetDocumentPort getDocumentPort;
   private final ApplicationGrpcMapper grpcMapper;
-  private final DocumentMapper documentMapper;
+  private final DomainDocumentMapper documentMapper;
 
   public DocumentGrpcServer(
       GeneratePdfPort generatePdfPort,
       GetDocumentPort getDocumentPort,
       ApplicationGrpcMapper grpcMapper,
-      DocumentMapper documentMapper) {
+      DomainDocumentMapper documentMapper) {
     this.generatePdfPort = generatePdfPort;
     this.getDocumentPort = getDocumentPort;
     this.grpcMapper = grpcMapper;
@@ -60,8 +61,8 @@ public class DocumentGrpcServer extends DocumentServiceGrpc.DocumentServiceImplB
       responseObserver.onNext(grpcMapper.toGenerateResponse(responseDto));
       responseObserver.onCompleted();
     } catch (DomainException ex) {
-      throwGrpcError(responseObserver, new ApplicationValidationException(ex.getMessage(), ex));
-    } catch (ApplicationValidationException ex) {
+      throwGrpcError(responseObserver, new ApplicationGrpcValidationException(ex.getMessage(), ex));
+    } catch (ApplicationGrpcValidationException ex) {
       throwGrpcError(responseObserver, ex);
     } catch (Exception ex) {
       throwGrpcError(responseObserver, ex);
@@ -75,18 +76,18 @@ public class DocumentGrpcServer extends DocumentServiceGrpc.DocumentServiceImplB
     try {
       Optional<Document> found = getDocumentPort.execute(request.getDocumentId());
       Document document = found.orElseThrow(() ->
-          new ApplicationNotFoundException(
-              ApplicationConstants.GRPC_ERROR_NOT_FOUND_PREFIX + request.getDocumentId(),
+          new ApplicationWebNotFoundException(
+              WebConstants.GRPC_ERROR_NOT_FOUND_PREFIX + request.getDocumentId(),
               null));
       GetDocumentResponseDto responseDto = documentMapper.toGetResponse(document);
       responseObserver.onNext(grpcMapper.toGetResponse(responseDto));
       responseObserver.onCompleted();
-    } catch (ApplicationNotFoundException ex) {
+    } catch (ApplicationWebNotFoundException ex) {
       responseObserver.onError(Status.NOT_FOUND.withDescription(ex.getMessage()).asRuntimeException());
-    } catch (ApplicationValidationException ex) {
+    } catch (ApplicationGrpcValidationException ex) {
       throwGrpcError(responseObserver, ex);
     } catch (DomainException ex) {
-      throwGrpcError(responseObserver, new ApplicationValidationException(ex.getMessage(), ex));
+      throwGrpcError(responseObserver, new ApplicationGrpcValidationException(ex.getMessage(), ex));
     } catch (Exception ex) {
       throwGrpcError(responseObserver, ex);
     }
@@ -100,14 +101,14 @@ public class DocumentGrpcServer extends DocumentServiceGrpc.DocumentServiceImplB
   }
 
   private Status resolveStatus(Exception ex) {
-    return ex instanceof ApplicationValidationException
+    return ex instanceof ApplicationGrpcValidationException
         ? Status.INVALID_ARGUMENT
         : Status.INTERNAL;
   }
 
   private String resolveMessage(Exception ex) {
-    return ex instanceof ApplicationValidationException
+    return ex instanceof ApplicationGrpcValidationException
         ? ex.getMessage()
-        : ApplicationConstants.GRPC_ERROR_INTERNAL;
+        : WebConstants.GRPC_ERROR_INTERNAL;
   }
 }

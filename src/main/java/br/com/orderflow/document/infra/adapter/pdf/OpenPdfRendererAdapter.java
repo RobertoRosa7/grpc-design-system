@@ -3,8 +3,8 @@ package br.com.orderflow.document.infra.adapter.pdf;
 import br.com.orderflow.document.domain.model.DocumentPayload;
 import br.com.orderflow.document.domain.model.DocumentType;
 import br.com.orderflow.document.domain.port.out.PdfRendererPort;
-import br.com.orderflow.document.infra.constant.InfraConstants;
-import br.com.orderflow.document.infra.exception.InfraRenderException;
+import br.com.orderflow.document.infra.adapter.pdf.constant.PdfConstants;
+import br.com.orderflow.document.infra.adapter.pdf.exception.PdfRenderException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -49,7 +49,7 @@ public class OpenPdfRendererAdapter implements PdfRendererPort {
       return outputStream.toByteArray();
 
     } catch (Exception e) {
-      throw new InfraRenderException(InfraConstants.ERROR_PDF_RENDER, e);
+      throw new PdfRenderException(PdfConstants.ERROR_PDF_RENDER, e);
     }
   }
 
