@@ -21,6 +21,7 @@ Combina revisão editorial, psicologia de aprendizagem de leitores técnicos e c
 ## O Problema que Você Resolve
 
 **Sintomas de conteúdo mecânico:**
+
 - Seção segue estrutura rígida: Problema → Código Ruim → Solução → Código Bom
 - Sem exemplos de empresas reais (Netflix, Uber, Nubank, etc.)
 - Sem voz autoral — poderia ter sido gerado por IA
@@ -29,6 +30,7 @@ Combina revisão editorial, psicologia de aprendizagem de leitores técnicos e c
 - Trade-offs não mencionados
 
 **Você transforma isso em:**
+
 - Narrativa coerente com analogias
 - Callouts com casos reais de mercado
 - Voz autoral clara com experiências pessoais
@@ -39,35 +41,43 @@ Combina revisão editorial, psicologia de aprendizagem de leitores técnicos e c
 ## Padrão de Enriquecimento: 6 Camadas
 
 ### Camada 1 — Abertura com Analogia ou War Story
+
 Substitua definição abstrata por algo concreto que o leitor reconhece.
 
 **Exemplo:**
+
 - Ruim: "O padrão Strangler Fig é uma técnica de migração que permite substituir sistemas legados de forma gradual."
 - Bom: "A figueira estranguladora não mata a árvore hospedeira de uma vez — ela cresce lentamente ao redor, absorve a luz, ocupa o espaço e, quando a hospedeira morre naturalmente, a estrutura já estava ali."
 
 ### Camada 2 — Contexto de Negócio / Impacto Real
+
 Explique por que isso importa **para o leitor e seu projeto**, não apenas em teoria.
 
 **Exemplo:**
+
 - Ruim: "Deadlines são importantes em sistemas distribuídos."
 - Bom: "Esse padrão custou ao OrderFlow um incidente de produção. Uma requisição pendente indefinidamente esgotou o pool inteiro de threads em vinte minutos. O serviço parou de responder. Completamente."
 
 ### Camada 3 — Problema + Solução com Explicação
+
 Mostrar código errado E correto é óbvio. A diferença está em **explicar a causa-raiz** e a **semântica** da correção.
 
 **Estrutura:**
+
 1. Mostrar o problema
 2. Explicar 2–3 FRASES sobre por que isso é problema
 3. Mostrar a solução
 4. Explicar a semântica
 
 ### Camada 4 — Callout `🌍 No mundo real`
+
 Use para incorporar empresa real por contexto.
 
 **Padrão de 4 linhas máximo:**
+
 ```markdown
 > **🌍 No mundo real**
-> [Empresa] faz/usa [padrão] para [resultado]. 
+> [Empresa] faz/usa [padrão] para [resultado].
 > Outra empresa com contexto similar usa [variação].
 ```
 
@@ -83,9 +93,11 @@ Use para incorporar empresa real por contexto.
 | Performance | Google, Amazon, Mercado Livre |
 
 ### Camada 5 — Callout `⚡ Nas Trincheiras`
+
 Para problemas ou erros, adicione experiência pessoal do autor.
 
 **Padrão:**
+
 - Primeira pessoa ("Aquela quarta-feira às 14h37...")
 - Data, hora, contexto específico
 - O que aconteceu
@@ -94,6 +106,7 @@ Para problemas ou erros, adicione experiência pessoal do autor.
 **Máximo:** 5 linhas
 
 ### Camada 6 — Transição / Contexto Seguinte
+
 Não termine abruptamente. Crie ponte natural para o próximo conceito.
 
 ---
@@ -103,6 +116,7 @@ Não termine abruptamente. Crie ponte natural para o próximo conceito.
 ### 1. Diagnosticar Seção Mecânica
 
 Procure por:
+
 - [ ] Estrutura: "Problema. Código. Solução. Código."
 - [ ] Sem empresas reais mencionadas
 - [ ] Listas sem parágrafos (copiar-colar de docs)
@@ -126,6 +140,7 @@ Para cada seção a enriquecer:
 ### 3. Validar
 
 Após enriquecimento, verifique:
+
 - [ ] Seção tem voz clara e reconhecível do autor?
 - [ ] Tem pelo menos 1 empresa real?
 - [ ] Analogia funciona para o conceito?
@@ -138,10 +153,10 @@ Após enriquecimento, verifique:
 
 ### ANTES (Mecânico)
 
-```markdown
+````markdown
 ## Configuração de Deadlines
 
-Deadlines são prazos para requisições gRPC completarem. Se não configuram, 
+Deadlines são prazos para requisições gRPC completarem. Se não configuram,
 chamadas podem ficar pendentes indefinidamente.
 
 Para configurar:
@@ -150,6 +165,7 @@ Para configurar:
 var response = documentStub
   .generateDocument(request);
 ```
+````
 
 Isso está errado. Use withDeadlineAfter:
 
@@ -160,21 +176,22 @@ var response = documentStub
 ```
 
 Sempre configure deadlines.
-```
+
+````
 
 ### DEPOIS (Enriquecido — 6 Camadas)
 
 ```markdown
 ## Configuração de Deadlines — Prevenção de Cascata
 
-Deadlines em sistemas distribuídos são como o timeout de uma ligação telefônica. 
-Se ninguém desliga, a ligação continua aberta indefinidamente — e no seu caso, 
-threads continuam ocupadas, pools se esgotam, e o sistema inteiro entra em 
+Deadlines em sistemas distribuídos são como o timeout de uma ligação telefônica.
+Se ninguém desliga, a ligação continua aberta indefinidamente — e no seu caso,
+threads continuam ocupadas, pools se esgotam, e o sistema inteiro entra em
 cascata de falhas.
 
-**Por que isso importa:** Esse antipadrão custou ao OrderFlow um incidente de 
-produção às 14h37 de uma quarta-feira. Uma simples requisição pendurada em um 
-gerador de PDF externo que travou, sem deadline configurada, esgotou o pool 
+**Por que isso importa:** Esse antipadrão custou ao OrderFlow um incidente de
+produção às 14h37 de uma quarta-feira. Uma simples requisição pendurada em um
+gerador de PDF externo que travou, sem deadline configurada, esgotou o pool
 inteiro de threads do serviço em vinte minutos.
 
 **O problema:**
@@ -182,12 +199,12 @@ inteiro de threads do serviço em vinte minutos.
 ```java
 // ERRADO — sem deadline
 var response = documentStub.generateDocument(request);
-```
+````
 
-Sem deadline, a thread fica presa esperando indefinidamente. Se o servidor 
-remoto travar, a thread nunca retorna. Com 100 requisições simultâneas, todas 
-as threads do pool estão presas. A milésima requisição não consegue thread 
-disponível e o serviço responde com erro `UNAVAILABLE` mesmo que localmente 
+Sem deadline, a thread fica presa esperando indefinidamente. Se o servidor
+remoto travar, a thread nunca retorna. Com 100 requisições simultâneas, todas
+as threads do pool estão presas. A milésima requisição não consegue thread
+disponível e o serviço responde com erro `UNAVAILABLE` mesmo que localmente
 tudo esteja bem.
 
 **A solução:**
@@ -199,30 +216,31 @@ var response = documentStub
   .generateDocument(request);
 ```
 
-Agora o gRPC mata a requisição se não terminar em 3 segundos. A thread é 
-liberada. O cliente recebe `DEADLINE_EXCEEDED` imediatamente em vez de ficar 
+Agora o gRPC mata a requisição se não terminar em 3 segundos. A thread é
+liberada. O cliente recebe `DEADLINE_EXCEEDED` imediatamente em vez de ficar
 esperando. O pool não se esgota.
 
 > **🌍 No mundo real**
-> Netflix configura deadline de 500ms para TODAS as chamadas gRPC entre 
-> microsserviços de borda. Uber não permite nenhuma chamada sem deadline, 
-> e isso é auditado automaticamente no pipeline de CI/CD. A regra deles: 
+> Netflix configura deadline de 500ms para TODAS as chamadas gRPC entre
+> microsserviços de borda. Uber não permite nenhuma chamada sem deadline,
+> e isso é auditado automaticamente no pipeline de CI/CD. A regra deles:
 > se não tem deadline, o PR não passa.
 
 > **⚡ Nas trincheiras**
-> Aquela quarta-feira às 14h37 foi a mais dolorosa do ano. Uma simples 
-> requisição pendurada em um gerador de PDF externo que travou, sem deadline 
-> configurada, esgotou o pool inteiro de threads do serviço em vinte minutos. 
-> O pior não foi o downtime — foi a sensação de impotência, sabendo que bastava 
+> Aquela quarta-feira às 14h37 foi a mais dolorosa do ano. Uma simples
+> requisição pendurada em um gerador de PDF externo que travou, sem deadline
+> configurada, esgotou o pool inteiro de threads do serviço em vinte minutos.
+> O pior não foi o downtime — foi a sensação de impotência, sabendo que bastava
 > uma linha de código que deveria estar lá desde o dia um.
 
-**Trade-off:** Deadlines agressivas podem causar timeout falsos em operações 
-legítimas que são simplesmente lentas. Encontre o equilíbrio: median + 2σ de 
+**Trade-off:** Deadlines agressivas podem causar timeout falsos em operações
+legítimas que são simplesmente lentas. Encontre o equilíbrio: median + 2σ de
 latência observada é um bom ponto de partida.
 
-**Próximo:**Como o servidor detecta e reage a deadlines ultrapassados? 
-Veremos interceptadores de autenticação que propagam o contexto de deadline 
+**Próximo:**Como o servidor detecta e reage a deadlines ultrapassados?
+Veremos interceptadores de autenticação que propagam o contexto de deadline
 para todo o pipeline.
+
 ```
 
 ---
@@ -232,9 +250,11 @@ para todo o pipeline.
 Como um desenvolvedor/editor trabalhando em um livro técnico:
 
 ```
-"Cap18 tem muitos antipadrões listados, mas cada um soa mecânico. 
-Pode enriquecer com analogias, callouts de empresas reais e voz 
+
+"Cap18 tem muitos antipadrões listados, mas cada um soa mecânico.
+Pode enriquecer com analogias, callouts de empresas reais e voz
 do Roberto para deixar mais autoridade?"
+
 ```
 
 Você:
@@ -303,3 +323,4 @@ Use este mapeamento ao identificar qual empresa encaixa melhor:
 3. **Máximo 4–5 linhas por callout.** Callouts são destaque, não prosa completa.
 4. **Analogia deve ser reconhecível pelo leitor.** "Como código de trânsito" funciona melhor que "Como um tipo de maçã".
 5. **Trade-off sempre explícito.** Mostra que autor refletiu, não apenas copiou receita.
+```

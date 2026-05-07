@@ -16,20 +16,23 @@ Isso é um **esboço**, não um capítulo pronto. Leitores especializados reconh
 ### Camada 1 — Abertura com Voz Autoral (1–2 parágrafos)
 
 **Não comece com:**
+
 - Definição abstrata
 - Citação de livro de padrões
 
 **Comece com:**
+
 - Uma analogia concreta (código de trânsito, caixa de entrega, maestro de orquestra)
 - Uma experiência pessoal ("aquela quarta-feira às 14h37")
 - Uma observação sobre o padrão no contexto real
 
 **Exemplo — Cap18 (Antipadrões):**
+
 ```markdown
-Antipadrões são como os artigos do código de trânsito — você só entende por que 
-existem depois de ver o acidente. No trânsito, aprendemos a não ultrapassar em 
-curva depois de ver os destroços. Em arquitetura de software, aprendemos a não 
-misturar lógica de negócio no adaptador depois que o serviço entrou em produção 
+Antipadrões são como os artigos do código de trânsito — você só entende por que
+existem depois de ver o acidente. No trânsito, aprendemos a não ultrapassar em
+curva depois de ver os destroços. Em arquitetura de software, aprendemos a não
+misturar lógica de negócio no adaptador depois que o serviço entrou em produção
 sem deadline configurada e as threads começaram a ficar presas.
 ```
 
@@ -38,9 +41,10 @@ sem deadline configurada e as threads começaram a ficar presas.
 Explique PORQUE isso importa para o leitor e para seu projeto.
 
 **Exemplo:**
+
 ```markdown
-Esse padrão custou ao OrderFlow um incidente de produção às 14h37 de uma 
-quarta-feira. Uma requisição pendente indefinidamente esgotou o pool inteiro 
+Esse padrão custou ao OrderFlow um incidente de produção às 14h37 de uma
+quarta-feira. Uma requisição pendente indefinidamente esgotou o pool inteiro
 de threads em vinte minutos. O serviço parou de responder. Completamente.
 ```
 
@@ -57,22 +61,25 @@ Mas com **anotações que explicam o POR QUÊ**, não apenas o COMO.
 Use `> **🌍 No mundo real**` para contextualizar como empresas conhecidas lidam com isso.
 
 **Padrão:**
+
 - Mention the company
-- Situação real deles  
+- Situação real deles
 - Métrica ou resultado concreto
 - Máximo 4 linhas
 
 **Exemplo — Cap15 (Imagens Docker):**
+
 ```markdown
 > **🌍 No mundo real**
-> O GitHub migrou seus microsserviços internos de gRPC para imagens com JRE 
-> Alpine após uma auditoria de segurança revelar que imagens com JDK completo 
-> carregavam dezenas de CVEs sem correspondência de uso. O Shopify opera 
-> centenas de microsserviços em Kubernetes com imagens enxutas como padrão 
+> O GitHub migrou seus microsserviços internos de gRPC para imagens com JRE
+> Alpine após uma auditoria de segurança revelar que imagens com JDK completo
+> carregavam dezenas de CVEs sem correspondência de uso. O Shopify opera
+> centenas de microsserviços em Kubernetes com imagens enxutas como padrão
 > obrigatório do pipeline de CI.
 ```
 
 **Mapeamento de Empresas por Tema:**
+
 - **gRPC como protocolo:** Google, Netflix, Uber, Cloudflare, Square
 - **Streaming:** Spotify, Twitter/X, YouTube
 - **Arquitetura hexagonal:** Nubank, iFood, Zalando
@@ -87,17 +94,19 @@ Use `> **🌍 No mundo real**` para contextualizar como empresas conhecidas lida
 Use para adicionar voz autoral — experiência do autor ou lição aprendida da forma difícil.
 
 **Padrão:**
+
 - Primeira pessoa
 - Situação específica (data, hora, contexto)
 - Lição aprendida e como evitar
 
 **Exemplo — Cap18 (Deadlines):**
+
 ```markdown
 > **⚡ Nas trincheiras**
-> Aquela quarta-feira às 14h37 foi a mais dolorosa do ano. Uma simples 
-> requisição pendurada em um gerador de PDF externo que travou, sem deadline 
-> configurada, esgotou o pool inteiro de threads do serviço em vinte minutos. 
-> O pior não foi o downtime — foi a sensação de impotência, sabendo que 
+> Aquela quarta-feira às 14h37 foi a mais dolorosa do ano. Uma simples
+> requisição pendurada em um gerador de PDF externo que travou, sem deadline
+> configurada, esgotou o pool inteiro de threads do serviço em vinte minutos.
+> O pior não foi o downtime — foi a sensação de impotência, sabendo que
 > bastava uma linha de código que deveria estar lá desde o dia um.
 ```
 
@@ -106,10 +115,12 @@ Use para adicionar voz autoral — experiência do autor ou lição aprendida da
 Não termine abruptamente. Crie ponte para o próximo conceito.
 
 **Evite:**
+
 - Ponto final abrupto
 - Lista sem contexto
 
 **Prefira:**
+
 - Pergunta que leva à próxima seção
 - Resumo de impacto
 
@@ -145,10 +156,10 @@ Para cada seção que sinta que está mecânica:
 
 ❌ **Não faça isto:**
 
-```markdown
+````markdown
 ### Configuração de TLS
 
-TLS (Transport Layer Security) é um protocolo de criptografia usado em comunicações 
+TLS (Transport Layer Security) é um protocolo de criptografia usado em comunicações
 de rede. Para configurar TLS em gRPC:
 
 1. Gere certificados
@@ -156,31 +167,33 @@ de rede. Para configurar TLS em gRPC:
 3. Configure no cliente
 
 Exemplo:
+
 ```java
 // código aqui
 ```
+````
 
 ---
 
 ✅ **Faça assim:**
 
-```markdown
+````markdown
 ### Configuração de TLS — Proteção da Fronteira
 
-TLS é frequentemente pensado como "opcional" em ambientes internos. Isso é um erro 
-que já vimos custar caro em produção. A Stripe, que processa bilhões em transações, 
-não permite nenhuma comunicação serviço-a-serviço sem TLS — inclusive em data centers 
-internos. O motivo: contaminação interna é silenciosa. Um atacante dentro da rede 
+TLS é frequentemente pensado como "opcional" em ambientes internos. Isso é um erro
+que já vimos custar caro em produção. A Stripe, que processa bilhões em transações,
+não permite nenhuma comunicação serviço-a-serviço sem TLS — inclusive em data centers
+internos. O motivo: contaminação interna é silenciosa. Um atacante dentro da rede
 corporativa pode interceptar dados sem criptografia em segundos.
 
 > **🌍 No mundo real**
-> Stripe implementa mTLS obrigatório para TODAS as comunicações internas. 
-> PagSeguro (fintech brasileira regulamentada) segue padrão idêntico. O princípio 
+> Stripe implementa mTLS obrigatório para TODAS as comunicações internas.
+> PagSeguro (fintech brasileira regulamentada) segue padrão idêntico. O princípio
 > deles é: "confiança zero, mesmo internamente".
 
 > **⚠️ ATENÇÃO**
-> Configurar TLS "depois de colocar em produção" é otimismo perigoso. 
-> Certificados expiram em silêncio. Renovação automatizada é obrigatória, 
+> Configurar TLS "depois de colocar em produção" é otimismo perigoso.
+> Certificados expiram em silêncio. Renovação automatizada é obrigatória,
 > não opcional.
 
 Para configurar TLS em gRPC:
@@ -190,9 +203,12 @@ Para configurar TLS em gRPC:
 3. Configure no cliente com...
 
 Exemplo:
+
 ```java
 // código aqui
 ```
+````
+
 ```
 
 ---
@@ -226,3 +242,4 @@ Exemplo:
 
 **Objetivo:** Nenhuma seção do livro deve soar como "copiar-colar de documentação" ou "gerado por IA".
 Toda seção deve ter voz, contexto, autoridade e diferencial.
+```
