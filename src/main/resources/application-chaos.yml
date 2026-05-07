@@ -25,4 +25,4 @@ chaos:
 # Log detalhado apenas para o interceptor de Chaos
 logging:
   level:
-    br.com.orderflow.document.infra.adapter.grpc.ChaosInterceptorConfig: DEBUG
+    br.com.orderflow.document.infra.config.chaos.ChaosInterceptorConfig: DEBUG

@@ -27,3 +27,17 @@ logging:
   level:
     br.com.orderflow: DEBUG
     net.devh.boot.grpc: INFO
+
+app:
+  security:
+    jwt:
+      enabled: ${APP_SECURITY_JWT_ENABLED:true}
+      certificate-path: ${APP_SECURITY_JWT_CERTIFICATE_PATH:classpath:certs/jwt-public.pem}
+      issuer: ${APP_SECURITY_JWT_ISSUER:}
+      audience: ${APP_SECURITY_JWT_AUDIENCE:}
+      clock-skew-seconds: ${APP_SECURITY_JWT_CLOCK_SKEW_SECONDS:60}
+      unsecured-methods:
+        - grpc.reflection.v1alpha.ServerReflection/ServerReflectionInfo
+        - grpc.reflection.v1.ServerReflection/ServerReflectionInfo
+        - grpc.health.v1.Health/Check
+        - grpc.health.v1.Health/Watch
