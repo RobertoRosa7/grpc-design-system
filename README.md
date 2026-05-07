@@ -195,7 +195,9 @@ O projeto de referência concreto implementado ao longo do livro é o **`documen
 ## Autor
 
 **Roberto Rosa da Silva**
-Engenheiro de software com mais de 11 anos de experiência. Atua no Banco Bradesco em soluções escaláveis com Java, Spring Boot, gRPC e arquitetura de microsserviços.
+Atuando na area de tecnologia desde 2014, com foco em arquitetura de software, Java, Spring Boot, gRPC e sistemas distribuidos em producao.
 
+- GitHub: [RobertoRosa7](https://github.com/RobertoRosa7)
 - LinkedIn: [roberto-rosa-da-silva](https://www.linkedin.com/in/roberto-rosa-da-silva-71911259/)
 - Instagram: [@roberto.rosa.silva](https://www.instagram.com/roberto.rosa.silva/)
+- Repositorio do livro: [RobertoRosa7/grpc-design-system](https://github.com/RobertoRosa7/grpc-design-system)
