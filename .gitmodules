@@ -2,3 +2,7 @@
 	path = docs/ebook
 	url = https://github.com/RobertoRosa7/manuscript-grpc-spring.git
 	branch = edicao-2026-pt
+[submodule "tooling/ebook-engine"]
+	path = tooling/ebook-engine
+	url = https://github.com/RobertoRosa7/ebook-engine.git
+	branch = main
