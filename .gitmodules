@@ -1,0 +1,4 @@
+[submodule "docs/ebook"]
+	path = docs/ebook
+	url = https://github.com/RobertoRosa7/manuscript-grpc-spring.git
+	branch = edition-2026-en
