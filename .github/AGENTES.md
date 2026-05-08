@@ -45,6 +45,25 @@ Exemplos de chamada no chat:
 - `@revisor-linguagem padronizar siglas e termos em inglês no texto`
 - `@revisor-linguagem relatório de erros do trecho abaixo`
 
+### KDP PDF 7x10 (`.github/agents/kdp-pdf-7x10.agent.md`)
+
+Especialista em configuração e conformidade de PDF para Amazon KDP no formato 7x10.
+
+Use este agente para:
+
+- Corrigir erros de "texto fora das margens"
+- Corrigir erros de "objeto fora das margens"
+- Ajustar medianiz/margens para livros longos
+- Eliminar páginas em branco no miolo
+- Corrigir capa quebrada (fragmento em página seguinte)
+- Validar header/footer dentro da área segura
+
+Exemplos de chamada no chat:
+
+- `@kdp-pdf-7x10 revisar erros do preview KDP`
+- `@kdp-pdf-7x10 ajustar PDF para passar nas regras da Amazon`
+- `@kdp-pdf-7x10 validar configuração final 7x10`
+
 ---
 
 ## Escopo deste repositório
