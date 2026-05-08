@@ -83,6 +83,8 @@ The concrete reference project implemented throughout the book is **`document-pd
 ```
 .
 ├── pom.xml                          # Maven build, versions and dependencies
+├── tooling/
+│   └── ebook-engine/                # Submodule: editorial engine (EPUB/PDF/HTML/PNG/JPG)
 ├── src/
 │   ├── main/
 │   │   ├── proto/                   # .proto definitions (gRPC contract)
@@ -102,11 +104,17 @@ The concrete reference project implemented throughout the book is **`document-pd
 │   │       └── certs/               # PEM certificate for JWT validation
 │   └── test/                        # ArchUnit + ChaosInterceptorTest
 └── docs/
-    └── ebook/
-        ├── meta.md                  # Editorial plan
-        └── manuscript/
-            ├── frontmatter/         # Cover, table of contents, preface, about the author
-            └── capitulos/           # 19 chapters (cap01 to cap19)
+  └── ebook/                       # Submodule: private editorial content (manuscript + assets + templates)
+```
+
+### Required submodules
+
+```bash
+# after cloning the repository
+git submodule update --init --recursive
+
+# update to referenced commits of the current branch
+git submodule update --remote docs/ebook tooling/ebook-engine
 ```
 
 ### Prerequisites
@@ -136,6 +144,19 @@ The concrete reference project implemented throughout the book is **`document-pd
 ```
 
 ### Main environment variables
+
+### Decoupled editorial pipeline
+
+```bash
+# generate EPUB via the decoupled engine
+node tooling/ebook-engine/build.js epub
+
+# generate PDF
+node tooling/ebook-engine/build.js pdf
+
+# generate all outputs
+node tooling/ebook-engine/build.js all
+```
 
 | Variable                            | Default (dev)                         | Description             |
 | ----------------------------------- | ------------------------------------- | ----------------------- |
