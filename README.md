@@ -3,11 +3,12 @@
 <img src="docs/ebook/assets/images/capa-template.svg" width="320" alt="Book cover: gRPC with Spring Boot in Microservices" />
 
 # gRPC with Spring Boot in Microservices
+
 ## Complete Guide from Zero to Production
 
 **Hexagonal Architecture · SOLID · Streaming · Security · Observability · Deploy**
 
-*Roberto Rosa da Silva — Practical Guide 2026*
+_Roberto Rosa da Silva — Practical Guide 2026_
 
 </div>
 
@@ -110,13 +111,13 @@ The concrete reference project implemented throughout the book is **`document-pd
 
 ### Prerequisites
 
-| Tool | Minimum version |
-|---|---|
-| Java (Corretto recommended) | 17 |
-| Maven Wrapper | included (`mvnw`) |
-| MongoDB | 6.x |
-| MinIO | latest stable |
-| Docker (optional) | 24+ |
+| Tool                        | Minimum version   |
+| --------------------------- | ----------------- |
+| Java (Corretto recommended) | 17                |
+| Maven Wrapper               | included (`mvnw`) |
+| MongoDB                     | 6.x               |
+| MinIO                       | latest stable     |
+| Docker (optional)           | 24+               |
 
 ### Main commands
 
@@ -136,16 +137,16 @@ The concrete reference project implemented throughout the book is **`document-pd
 
 ### Main environment variables
 
-| Variable | Default (dev) | Description |
-|---|---|---|
-| `GRPC_PORT` | `9090` | gRPC server port |
-| `MONGODB_URI` | `mongodb://localhost:27017/orderflow` | MongoDB connection URI |
-| `MINIO_ENDPOINT` | `http://localhost:9000` | MinIO URL |
-| `MINIO_ACCESS_KEY` | `minioadmin` | MinIO access key |
-| `MINIO_SECRET_KEY` | `minioadmin` | MinIO secret key |
-| `MINIO_BUCKET` | `documents` | Destination bucket name |
-| `APP_SECURITY_JWT_ENABLED` | `true` | Enables JWT validation |
-| `APP_SECURITY_JWT_CERTIFICATE_PATH` | `classpath:certs/jwt-public.pem` | Public PEM certificate |
+| Variable                            | Default (dev)                         | Description             |
+| ----------------------------------- | ------------------------------------- | ----------------------- |
+| `GRPC_PORT`                         | `9090`                                | gRPC server port        |
+| `MONGODB_URI`                       | `mongodb://localhost:27017/orderflow` | MongoDB connection URI  |
+| `MINIO_ENDPOINT`                    | `http://localhost:9000`               | MinIO URL               |
+| `MINIO_ACCESS_KEY`                  | `minioadmin`                          | MinIO access key        |
+| `MINIO_SECRET_KEY`                  | `minioadmin`                          | MinIO secret key        |
+| `MINIO_BUCKET`                      | `documents`                           | Destination bucket name |
+| `APP_SECURITY_JWT_ENABLED`          | `true`                                | Enables JWT validation  |
+| `APP_SECURITY_JWT_CERTIFICATE_PATH` | `classpath:certs/jwt-public.pem`      | Public PEM certificate  |
 
 ---
 
@@ -153,42 +154,42 @@ The concrete reference project implemented throughout the book is **`document-pd
 
 ### Part I — Fundamentals
 
-| Ch | Title |
-|---|---|
-| 1 | Introduction to gRPC and Modern RPC |
-| 2 | Setting Up the Spring Boot + gRPC Ecosystem |
-| 3 | Protocol Buffers in Practice |
+| Ch  | Title                                       |
+| --- | ------------------------------------------- |
+| 1   | Introduction to gRPC and Modern RPC         |
+| 2   | Setting Up the Spring Boot + gRPC Ecosystem |
+| 3   | Protocol Buffers in Practice                |
 
 ### Part II — Architecture and Design
 
-| Ch | Title |
-|---|---|
-| 4 | Hexagonal Architecture Applied to Spring Microservices |
-| 5 | First gRPC Service with Hexagonal Layer Separation |
-| 6 | Robust Contracts and API Versioning |
-| 7 | Unary, Server Streaming, Client Streaming, and Bidirectional Streaming |
-| 8 | Interceptors, Metadata, Deadlines, Retries, and Error Handling |
-| 9 | SOLID in Use Case, Port, and Adapter Design |
+| Ch  | Title                                                                  |
+| --- | ---------------------------------------------------------------------- |
+| 4   | Hexagonal Architecture Applied to Spring Microservices                 |
+| 5   | First gRPC Service with Hexagonal Layer Separation                     |
+| 6   | Robust Contracts and API Versioning                                    |
+| 7   | Unary, Server Streaming, Client Streaming, and Bidirectional Streaming |
+| 8   | Interceptors, Metadata, Deadlines, Retries, and Error Handling         |
+| 9   | SOLID in Use Case, Port, and Adapter Design                            |
 
 ### Part III — Platform and Operations
 
-| Ch | Title |
-|---|---|
-| 10 | Security with TLS/mTLS, Authentication, and Authorization |
-| 11 | Service Discovery, API Gateway, and REST + gRPC Coexistence |
-| 12 | Observability: Logs, Metrics, Tracing (OpenTelemetry) |
-| 13 | Resilience: Circuit Breaker, Timeout, Backpressure, and Idempotency |
-| 14 | Testing: Unit, Integration, Contract, and Performance |
+| Ch  | Title                                                               |
+| --- | ------------------------------------------------------------------- |
+| 10  | Security with TLS/mTLS, Authentication, and Authorization           |
+| 11  | Service Discovery, API Gateway, and REST + gRPC Coexistence         |
+| 12  | Observability: Logs, Metrics, Tracing (OpenTelemetry)               |
+| 13  | Resilience: Circuit Breaker, Timeout, Backpressure, and Idempotency |
+| 14  | Testing: Unit, Integration, Contract, and Performance               |
 
 ### Part IV — Delivery and Scale
 
-| Ch | Title |
-|---|---|
-| 15 | Deploy with Containers and Kubernetes |
-| 16 | Gradual Migration from REST to gRPC without Breaking the Domain |
-| 17 | Complete Case Study (End-to-End in Hexagonal Architecture) |
-| 18 | Best Practices, Anti-patterns, and Production Checklist |
-| 19 | Appendices: command reference, snippets, and resources |
+| Ch  | Title                                                           |
+| --- | --------------------------------------------------------------- |
+| 15  | Deploy with Containers and Kubernetes                           |
+| 16  | Gradual Migration from REST to gRPC without Breaking the Domain |
+| 17  | Complete Case Study (End-to-End in Hexagonal Architecture)      |
+| 18  | Best Practices, Anti-patterns, and Production Checklist         |
+| 19  | Appendices: command reference, snippets, and resources          |
 
 ---
 
