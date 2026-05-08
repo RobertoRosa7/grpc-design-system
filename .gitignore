@@ -34,5 +34,3 @@ build/
 *.log
 /src/main/resources/application-local.yml
 
-# Manuscrito do livro - nao versionar no repo publico
-docs/ebook/manuscript/
