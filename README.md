@@ -1,203 +1,203 @@
 <div align="center">
 
-<img src="docs/ebook/assets/images/capa-template.svg" width="320" alt="Capa do livro gRPC com Spring Boot em Microsserviços" />
+<img src="docs/ebook/assets/images/capa-template.svg" width="320" alt="Book cover: gRPC with Spring Boot in Microservices" />
 
-# gRPC com Spring Boot em Microsserviços
-## Guia Completo do Zero a Produção
+# gRPC with Spring Boot in Microservices
+## Complete Guide from Zero to Production
 
-**Arquitetura Hexagonal · SOLID · Streaming · Segurança · Observabilidade · Deploy**
+**Hexagonal Architecture · SOLID · Streaming · Security · Observability · Deploy**
 
-*Roberto Rosa da Silva — Guia Prático 2026*
+*Roberto Rosa da Silva — Practical Guide 2026*
 
 </div>
 
 ---
 
-## Sobre o livro
+## About the book
 
-Este projeto é o repositório técnico de referência do livro **gRPC com Spring Boot em Microsserviços: Guia Completo do Zero a Produção**. O livro foi escrito para engenheiros e arquitetos Java que precisam construir sistemas distribuídos reais, com foco em prática, qualidade de código e operação confiável em produção.
+This project is the technical reference repository for the book **gRPC with Spring Boot in Microservices: Complete Guide from Zero to Production**. The book was written for Java engineers and architects who need to build real distributed systems, with a focus on practice, code quality, and reliable production operations.
 
-A proposta central é oferecer um guia técnico progressivo que cobre todo o ciclo de vida de um serviço gRPC: do primeiro `.proto` ao deploy em Kubernetes, passando por arquitetura hexagonal, segurança JWT/mTLS, observabilidade com Micrometer e Prometheus, e resiliência com Resilience4j.
+The central proposition is to offer a progressive technical guide covering the full lifecycle of a gRPC service: from the first `.proto` to deploy on Kubernetes, including hexagonal architecture, JWT/mTLS security, observability with Micrometer and Prometheus, and resilience with Resilience4j.
 
-O projeto de referência concreto implementado ao longo do livro é o **`document-pdf-grpc`**: um microsserviço que gera PDFs sob demanda, armazena no MinIO e persiste metadados no MongoDB, exposto exclusivamente via gRPC.
+The concrete reference project implemented throughout the book is **`document-pdf-grpc`**: a microservice that generates PDFs on demand, stores them in MinIO, and persists metadata in MongoDB, exposed exclusively via gRPC.
 
 ---
 
-## O que foi implementado neste repositório
+## What was implemented in this repository
 
-### Infraestrutura base
+### Base infrastructure
 
-- **Spring Boot 3.3.0** com Java 17 e Maven Wrapper
+- **Spring Boot 3.3.0** with Java 17 and Maven Wrapper
 - **gRPC server** via `net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE`
-- **Protocol Buffers 3.25.3** com geração de código via `protobuf-maven-plugin`
-- **MongoDB** como banco de metadados via Spring Data
-- **MinIO** como storage S3-compatible para os PDFs gerados
-- **OpenPDF 1.3.39** para renderização dos documentos
+- **Protocol Buffers 3.25.3** with code generation via `protobuf-maven-plugin`
+- **MongoDB** as metadata database via Spring Data
+- **MinIO** as S3-compatible storage for generated PDFs
+- **OpenPDF 1.3.39** for document rendering
 
-### Arquitetura
+### Architecture
 
-- **Arquitetura Hexagonal (Ports and Adapters)** aplicada em todos os módulos
-- Separação estrita entre `domain/`, `application/` e `infra/`
-- Servidor gRPC como adaptador de entrada (`@GrpcService`)
-- Adaptadores de saída isolados: `MinioStorageAdapter`, `DocumentMongoRepositoryAdapter`
-- Caso de uso central: `GeneratePdfService` orquestrando renderização, storage e persistência
+- **Hexagonal Architecture (Ports and Adapters)** applied across all modules
+- Strict separation between `domain/`, `application/`, and `infra/`
+- gRPC server as inbound adapter (`@GrpcService`)
+- Isolated outbound adapters: `MinioStorageAdapter`, `DocumentMongoRepositoryAdapter`
+- Central use case: `GeneratePdfService` orchestrating rendering, storage, and persistence
 
-### Segurança
+### Security
 
-- Validação **JWT assimétrica com chave PEM** (`nimbus-jose-jwt:9.37.3`)
-- Interceptor gRPC global: `JwtAuthServerInterceptor`
-- Arquitetura de validação modular com padrão **policy/validation/constant**:
+- **Asymmetric JWT validation with PEM key** (`nimbus-jose-jwt:9.37.3`)
+- Global gRPC interceptor: `JwtAuthServerInterceptor`
+- Modular validation architecture following the **policy/validation/constant** pattern:
   - Policies: `ExpirationPolicy`, `NotBeforePolicy`, `SubjectPolicy`, `IssuerPolicy`, `AudiencePolicy`, `PemPublicKeyPolicy`
-  - Validações: `JwtClaimsValidator`, `JwtSignatureValidator`, `JwtRolesExtractor`, `PemPublicKeyResolver`
-- Métodos sem autenticação configuráveis via `application.yml` (health checks, reflection)
+  - Validators: `JwtClaimsValidator`, `JwtSignatureValidator`, `JwtRolesExtractor`, `PemPublicKeyResolver`
+- Methods without authentication configurable via `application.yml` (health checks, reflection)
 
-### Observabilidade
+### Observability
 
-- **Spring Boot Actuator** com endpoints `/actuator/health`, `/actuator/prometheus` e `/actuator/metrics`
-- **Micrometer + Prometheus** (`micrometer-registry-prometheus`) para métricas numéricas
-- **`GrpcMetricsInterceptor`** — interceptor gRPC global que registra por método:
-  - `grpc.server.requests.total` (Counter por método e status code)
-  - `grpc.server.latency` (Timer com percentis p50/p95/p99)
-- Tag `service: document-pdf-grpc` em todas as métricas para correlação no Grafana
+- **Spring Boot Actuator** with endpoints `/actuator/health`, `/actuator/prometheus`, and `/actuator/metrics`
+- **Micrometer + Prometheus** (`micrometer-registry-prometheus`) for numeric metrics
+- **`GrpcMetricsInterceptor`** — global gRPC interceptor that records per method:
+  - `grpc.server.requests.total` (Counter by method and status code)
+  - `grpc.server.latency` (Timer with p50/p95/p99 percentiles)
+- Tag `service: document-pdf-grpc` on all metrics for Grafana correlation
 
-### Resiliência
+### Resilience
 
 - **Resilience4j `2.2.0`** (`resilience4j-spring-boot3` + `resilience4j-micrometer`)
-- `MinioStorageAdapter.store()` anotado com `@Retry(name="minio")` + `@CircuitBreaker(name="minio")`
-- `DocumentMongoRepositoryAdapter.save()` e `findById()` com `@Retry(name="mongodb")` + `@CircuitBreaker(name="mongodb")`
-- Configuração via `application.yml`: janela deslizante de 10 chamadas, 50% de threshold, 3 tentativas com backoff exponencial
-- Fallbacks explícitos que relançam as exceções de domínio adequadas
+- `MinioStorageAdapter.store()` annotated with `@Retry(name="minio")` + `@CircuitBreaker(name="minio")`
+- `DocumentMongoRepositoryAdapter.save()` and `findById()` with `@Retry(name="mongodb")` + `@CircuitBreaker(name="mongodb")`
+- Configuration via `application.yml`: sliding window of 10 calls, 50% threshold, 3 attempts with exponential backoff
+- Explicit fallbacks that rethrow appropriate domain exceptions
 
-### Testes e qualidade
+### Tests and quality
 
-- **ArchUnit 1.3.0** — testes de arquitetura em camadas (sem violação de dependência)
-- Testes unitários no core de domínio sem dependências de framework
-- Profile `chaos` para injeção de falhas gRPC (`UNAVAILABLE`, `DEADLINE_EXCEEDED`)
-- 6 testes automatizados passando, BUILD SUCCESS validado com `.\mvnw.cmd test -DskipITs`
+- **ArchUnit 1.3.0** — layered architecture tests (no dependency violations)
+- Unit tests in the domain core with no framework dependencies
+- `chaos` profile for gRPC fault injection (`UNAVAILABLE`, `DEADLINE_EXCEEDED`)
+- 6 automated tests passing, BUILD SUCCESS validated with `.\mvnw.cmd test -DskipITs`
 
 ---
 
-## Guia rápido do repositório
+## Repository quick guide
 
 ```
 .
-├── pom.xml                          # Build Maven, versões e dependências
+├── pom.xml                          # Maven build, versions and dependencies
 ├── src/
 │   ├── main/
-│   │   ├── proto/                   # Definições .proto (contrato gRPC)
+│   │   ├── proto/                   # .proto definitions (gRPC contract)
 │   │   ├── java/br/com/orderflow/document/
-│   │   │   ├── domain/              # Core: modelos, portas e serviços de domínio
-│   │   │   ├── application/         # Adaptadores de entrada (gRPC server)
-│   │   │   └── infra/               # Adaptadores de saída + configs
+│   │   │   ├── domain/              # Core: models, ports and domain services
+│   │   │   ├── application/         # Inbound adapters (gRPC server)
+│   │   │   └── infra/               # Outbound adapters + configs
 │   │   │       ├── adapter/
 │   │   │       │   ├── metrics/     # GrpcMetricsInterceptor (Micrometer)
 │   │   │       │   ├── minio/       # MinioStorageAdapter + Resilience4j
 │   │   │       │   ├── mongodb/     # DocumentMongoRepositoryAdapter + Resilience4j
-│   │   │       │   └── security/    # JWT PEM interceptor e validações
+│   │   │       │   └── security/    # JWT PEM interceptor and validators
 │   │   │       └── config/          # Beans: MinioConfig, MongoDbConfig, MetricsConfig
 │   │   └── resources/
-│   │       ├── application.yml      # Config principal (gRPC, MongoDB, MinIO, Actuator, Resilience4j)
-│   │       ├── application-chaos.yml # Profile de chaos engineering
-│   │       └── certs/               # Certificado PEM para validação JWT
+│   │       ├── application.yml      # Main config (gRPC, MongoDB, MinIO, Actuator, Resilience4j)
+│   │       ├── application-chaos.yml # Chaos engineering profile
+│   │       └── certs/               # PEM certificate for JWT validation
 │   └── test/                        # ArchUnit + ChaosInterceptorTest
 └── docs/
     └── ebook/
-        ├── meta.md                  # Plano editorial
+        ├── meta.md                  # Editorial plan
         └── manuscript/
-            ├── frontmatter/         # Capa, sumário, prefácio, sobre o autor
-            └── capitulos/           # 19 capítulos (cap01 a cap19)
+            ├── frontmatter/         # Cover, table of contents, preface, about the author
+            └── capitulos/           # 19 chapters (cap01 to cap19)
 ```
 
-### Pré-requisitos
+### Prerequisites
 
-| Ferramenta | Versão mínima |
+| Tool | Minimum version |
 |---|---|
-| Java (Corretto recomendado) | 17 |
-| Maven Wrapper | incluído (`mvnw`) |
+| Java (Corretto recommended) | 17 |
+| Maven Wrapper | included (`mvnw`) |
 | MongoDB | 6.x |
-| MinIO | última estável |
-| Docker (opcional) | 24+ |
+| MinIO | latest stable |
+| Docker (optional) | 24+ |
 
-### Comandos principais
+### Main commands
 
 ```bash
-# compilar e gerar código protobuf
+# compile and generate protobuf code
 .\mvnw.cmd compile
 
-# executar testes (sem integration tests)
+# run tests (without integration tests)
 .\mvnw.cmd test -DskipITs
 
-# subir a aplicação localmente
+# run the application locally
 .\mvnw.cmd spring-boot:run
 
-# empacotar JAR
+# package JAR
 .\mvnw.cmd package -DskipTests
 ```
 
-### Variáveis de ambiente principais
+### Main environment variables
 
-| Variável | Padrão (dev) | Descrição |
+| Variable | Default (dev) | Description |
 |---|---|---|
-| `GRPC_PORT` | `9090` | Porta do servidor gRPC |
-| `MONGODB_URI` | `mongodb://localhost:27017/orderflow` | URI de conexão com MongoDB |
-| `MINIO_ENDPOINT` | `http://localhost:9000` | URL do MinIO |
-| `MINIO_ACCESS_KEY` | `minioadmin` | Chave de acesso MinIO |
-| `MINIO_SECRET_KEY` | `minioadmin` | Chave secreta MinIO |
-| `MINIO_BUCKET` | `documents` | Nome do bucket de destino |
-| `APP_SECURITY_JWT_ENABLED` | `true` | Habilita validação JWT |
-| `APP_SECURITY_JWT_CERTIFICATE_PATH` | `classpath:certs/jwt-public.pem` | Certificado PEM público |
+| `GRPC_PORT` | `9090` | gRPC server port |
+| `MONGODB_URI` | `mongodb://localhost:27017/orderflow` | MongoDB connection URI |
+| `MINIO_ENDPOINT` | `http://localhost:9000` | MinIO URL |
+| `MINIO_ACCESS_KEY` | `minioadmin` | MinIO access key |
+| `MINIO_SECRET_KEY` | `minioadmin` | MinIO secret key |
+| `MINIO_BUCKET` | `documents` | Destination bucket name |
+| `APP_SECURITY_JWT_ENABLED` | `true` | Enables JWT validation |
+| `APP_SECURITY_JWT_CERTIFICATE_PATH` | `classpath:certs/jwt-public.pem` | Public PEM certificate |
 
 ---
 
-## Sumário do livro
+## Table of contents
 
-### Parte I — Fundamentos
+### Part I — Fundamentals
 
-| Cap | Título |
+| Ch | Title |
 |---|---|
-| 1 | Introdução ao gRPC e RPC Moderno |
-| 2 | Setup do Ecossistema Spring Boot + gRPC |
-| 3 | Protocol Buffers na Prática |
+| 1 | Introduction to gRPC and Modern RPC |
+| 2 | Setting Up the Spring Boot + gRPC Ecosystem |
+| 3 | Protocol Buffers in Practice |
 
-### Parte II — Arquitetura e Design
+### Part II — Architecture and Design
 
-| Cap | Título |
+| Ch | Title |
 |---|---|
-| 4 | Arquitetura Hexagonal Aplicada a Microsserviços Spring |
-| 5 | Primeiro Serviço gRPC com Separação por Camadas Hexagonais |
-| 6 | Contratos Robustos e Versionamento de APIs |
-| 7 | Unary, Server Streaming, Client Streaming e Bidirectional Streaming |
-| 8 | Interceptadores, Metadados, Deadlines, Retries e Tratamento de Erros |
-| 9 | SOLID no Desenho de Use Cases, Portas e Adaptadores |
+| 4 | Hexagonal Architecture Applied to Spring Microservices |
+| 5 | First gRPC Service with Hexagonal Layer Separation |
+| 6 | Robust Contracts and API Versioning |
+| 7 | Unary, Server Streaming, Client Streaming, and Bidirectional Streaming |
+| 8 | Interceptors, Metadata, Deadlines, Retries, and Error Handling |
+| 9 | SOLID in Use Case, Port, and Adapter Design |
 
-### Parte III — Plataforma e Operação
+### Part III — Platform and Operations
 
-| Cap | Título |
+| Ch | Title |
 |---|---|
-| 10 | Segurança com TLS/mTLS, Autenticação e Autorização |
-| 11 | Service Discovery, API Gateway e Coexistência REST + gRPC |
-| 12 | Observabilidade: Logs, Métricas, Tracing (OpenTelemetry) |
-| 13 | Resiliência: Circuit Breaker, Timeout, Backpressure e Idempotência |
-| 14 | Testes: Unitários, Integração, Contrato e Performance |
+| 10 | Security with TLS/mTLS, Authentication, and Authorization |
+| 11 | Service Discovery, API Gateway, and REST + gRPC Coexistence |
+| 12 | Observability: Logs, Metrics, Tracing (OpenTelemetry) |
+| 13 | Resilience: Circuit Breaker, Timeout, Backpressure, and Idempotency |
+| 14 | Testing: Unit, Integration, Contract, and Performance |
 
-### Parte IV — Entrega e Escala
+### Part IV — Delivery and Scale
 
-| Cap | Título |
+| Ch | Title |
 |---|---|
-| 15 | Deploy em Containers e Kubernetes |
-| 16 | Migração Gradual de REST para gRPC sem Quebrar o Domínio |
-| 17 | Estudo de Caso Completo (Fim a Fim em Arquitetura Hexagonal) |
-| 18 | Boas Práticas, Antipadrões e Checklist de Produção |
-| 19 | Apêndices: referência de comandos, snippets e recursos |
+| 15 | Deploy with Containers and Kubernetes |
+| 16 | Gradual Migration from REST to gRPC without Breaking the Domain |
+| 17 | Complete Case Study (End-to-End in Hexagonal Architecture) |
+| 18 | Best Practices, Anti-patterns, and Production Checklist |
+| 19 | Appendices: command reference, snippets, and resources |
 
 ---
 
-## Autor
+## Author
 
 **Roberto Rosa da Silva**
-Atuando na area de tecnologia desde 2014, com foco em arquitetura de software, Java, Spring Boot, gRPC e sistemas distribuidos em producao.
+Working in technology since 2014, focused on software architecture, Java, Spring Boot, gRPC, and distributed systems in production.
 
 - GitHub: [RobertoRosa7](https://github.com/RobertoRosa7)
 - LinkedIn: [roberto-rosa-da-silva](https://www.linkedin.com/in/roberto-rosa-da-silva-71911259/)
 - Instagram: [@roberto.rosa.silva](https://www.instagram.com/roberto.rosa.silva/)
-- Repositorio do livro: [RobertoRosa7/grpc-design-system](https://github.com/RobertoRosa7/grpc-design-system)
+- Book repository: [RobertoRosa7/grpc-design-system](https://github.com/RobertoRosa7/grpc-design-system)
