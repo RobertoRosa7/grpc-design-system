@@ -82,6 +82,8 @@ O projeto de referência concreto implementado ao longo do livro é o **`documen
 ```
 .
 ├── pom.xml                          # Build Maven, versões e dependências
+├── tooling/
+│   └── ebook-engine/                # Submodule: motor editorial (EPUB/PDF/HTML/PNG/JPG)
 ├── src/
 │   ├── main/
 │   │   ├── proto/                   # Definições .proto (contrato gRPC)
@@ -101,11 +103,17 @@ O projeto de referência concreto implementado ao longo do livro é o **`documen
 │   │       └── certs/               # Certificado PEM para validação JWT
 │   └── test/                        # ArchUnit + ChaosInterceptorTest
 └── docs/
-    └── ebook/
-        ├── meta.md                  # Plano editorial
-        └── manuscript/
-            ├── frontmatter/         # Capa, sumário, prefácio, sobre o autor
-            └── capitulos/           # 19 capítulos (cap01 a cap19)
+  └── ebook/                       # Submodule: conteúdo editorial privado (manuscrito + assets + templates)
+```
+
+### Submodules obrigatórios
+
+```bash
+# após clonar o repositório
+git submodule update --init --recursive
+
+# atualizar para os commits referenciados pela branch atual
+git submodule update --remote docs/ebook tooling/ebook-engine
 ```
 
 ### Pré-requisitos
@@ -132,6 +140,19 @@ O projeto de referência concreto implementado ao longo do livro é o **`documen
 
 # empacotar JAR
 .\mvnw.cmd package -DskipTests
+```
+
+### Pipeline editorial desacoplada
+
+```bash
+# gerar EPUB via engine desacoplada
+node tooling/ebook-engine/build.js epub
+
+# gerar PDF
+node tooling/ebook-engine/build.js pdf
+
+# gerar tudo
+node tooling/ebook-engine/build.js all
 ```
 
 ### Variáveis de ambiente principais
